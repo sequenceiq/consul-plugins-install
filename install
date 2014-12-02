@@ -6,7 +6,13 @@
 main(){
   read url name;
   debug url=$url name=$name;
-  plugn install $url $name || debug "Couldn't install plugin from specified URL.";
+  if plugn install $url $name; then
+    debug "Plugin ($name) installed successfully."
+    plugn enable $name || debug "Couldn't enable plugin.";
+    debug "Plugin ($name) enabled successfully."
+  else
+    debug "Couldn't install plugin from specified URL.";
+  fi
 }
 
 debug(){
