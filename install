@@ -1,0 +1,16 @@
+#!/bin/bash
+
+: ${INSTALL_LOGFILE:=/tmp/install_download.log}
+: ${DEBUG:=1}
+
+main(){
+  read url name;
+  debug url=$url name=$name;
+  plugn install $url $name || debug "Couldn't install plugin from specified URL.";
+}
+
+debug(){
+  [[ "$DEBUG" ]] && echo "[DEBUG] $*" >> $INSTALL_LOGFILE
+}
+
+[[ "$0" == "$BASH_SOURCE" ]] && main "$@"
