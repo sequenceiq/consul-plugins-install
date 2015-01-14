@@ -11,8 +11,12 @@ main(){
     plugn enable $name || (debug "Couldn't enable plugin." && exit 1);
     debug "Plugin ($name) enabled successfully."
   else
-    debug "Couldn't install plugin from specified URL.";
-    exit 1;
+    if [ $? -eq 128 ]; then
+      debug "Plugin already installed".
+    else
+      debug "Couldn't install plugin from specified URL.";
+      exit 1;
+    fi
   fi
 }
 
