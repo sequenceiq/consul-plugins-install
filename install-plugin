@@ -4,7 +4,8 @@
 : ${DEBUG:=1}
 
 main(){
-  echo $PAYLOAD | read url name;
+  url=$(echo $PAYLOAD | cut -d" " -f 1);
+  name=$(echo $PAYLOAD | cut -d" " -f 2);
   debug url=$url name=$name;
   if plugn install $url $name; then
     debug "Plugin ($name) installed successfully."
