@@ -1,22 +1,23 @@
 #!/bin/bash
 
-: ${INSTALL_LOGFILE:=/tmp/install_download.log}
+: ${LOGFILE:=/tmp/install_download.log}
 : ${DEBUG:=1}
 
 main(){
-  read url name;
+  echo $PAYLOAD | read url name;
   debug url=$url name=$name;
   if plugn install $url $name; then
     debug "Plugin ($name) installed successfully."
-    plugn enable $name || debug "Couldn't enable plugin.";
+    plugn enable $name || (debug "Couldn't enable plugin." && exit 1);
     debug "Plugin ($name) enabled successfully."
   else
     debug "Couldn't install plugin from specified URL.";
+    exit 1;
   fi
 }
 
 debug(){
-  [[ "$DEBUG" ]] && echo "[DEBUG] $*" >> $INSTALL_LOGFILE
+  [[ "$DEBUG" ]] && echo "[DEBUG] $*" >> $LOGFILE
 }
 
 [[ "$0" == "$BASH_SOURCE" ]] && main "$@"
