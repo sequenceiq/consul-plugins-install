@@ -1,0 +1,29 @@
+#!/bin/bash -x
+
+TEST_DIR=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)
+rm -rf $TEST_DIR/tmp
+export PLUGIN_PATH=$TEST_DIR/tmp
+export LOGFILE=$PLUGIN_PATH/test.log
+
+plugn(){
+  debug plugn $@
+}
+
+. $TEST_DIR/../install-plugin
+
+export PAYLOAD="git://github.com/sequenceiq/consul-plugins-titan git1"
+main
+
+export PAYLOAD="https://github.com/sequenceiq/consul-plugins-titan.git git2"
+main
+
+export PAYLOAD="https://raw.githubusercontent.com/sequenceiq/consul-plugins-install/recipe/test/example.tar tar"
+main
+
+export PAYLOAD="https://raw.githubusercontent.com/sequenceiq/consul-plugins-install/recipe/test/example.zip zip"
+main
+
+if [ 4 -ne $(find $PLUGIN_PATH/available -name plugin.toml | wc -l) ]; then
+  echo "FAILED, some of the plugins are missing!"
+  exit 1
+fi
