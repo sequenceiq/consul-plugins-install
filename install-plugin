@@ -1,5 +1,6 @@
 #!/bin/bash
 
+: ${CONSUL_STORE:=http://localhost:8500/v1/kv/}
 : ${LOGFILE:=/tmp/install_download.log}
 : ${PLUGIN_PATH:="/plugins"}
 : ${DEBUG:=1}
@@ -62,6 +63,10 @@ main(){
   local protocol=$(echo "$url" | awk -F: '{print $1}');
   if [ "$protocol" = "git" ] || [ "${url##*.}" = "git" ]; then
     _fetch_plugin git $url $name
+    _enable_plugin $name
+  elif [ "$protocol" = "consul" ]; then
+    local filename=`date +%s%N`
+    _fetch_plugin consul $url $name $filename
     _enable_plugin $name
   elif [ "$protocol" = "http" ] ||
       [ "$protocol" = "https" ]; then

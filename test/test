@@ -1,8 +1,10 @@
 #!/bin/bash -x
 
+BRANCH=master
 TEST_DIR=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)
 rm -rf $TEST_DIR/tmp
 export PLUGIN_PATH=$TEST_DIR/tmp
+export CONSUL_STORE=https://raw.githubusercontent.com/sequenceiq/consul-plugins-install/$BRANCH/test/
 export LOGFILE=$PLUGIN_PATH/test.log
 
 plugn(){
@@ -17,13 +19,16 @@ main
 export PAYLOAD="https://github.com/sequenceiq/consul-plugins-titan.git git2"
 main
 
-export PAYLOAD="https://raw.githubusercontent.com/sequenceiq/consul-plugins-install/recipe/test/example.tar tar"
+export PAYLOAD="consul://consul consul"
 main
 
-export PAYLOAD="https://raw.githubusercontent.com/sequenceiq/consul-plugins-install/recipe/test/example.zip zip"
+export PAYLOAD="https://raw.githubusercontent.com/sequenceiq/consul-plugins-install/$BRANCH/test/example.tar tar"
 main
 
-if [ 4 -ne $(find $PLUGIN_PATH/available -name plugin.toml | wc -l) ]; then
+export PAYLOAD="https://raw.githubusercontent.com/sequenceiq/consul-plugins-install/$BRANCH/test/example.zip zip"
+main
+
+if [ 5 -ne $(find $PLUGIN_PATH/available -name plugin.toml | wc -l) ]; then
   echo "FAILED, some of the plugins are missing!"
   exit 1
 fi
