@@ -3,5 +3,9 @@ while read line; do
   local n=$(echo $line | cut -d: -f1)
   echo "$line" | sed -e "s/^$n://" | base64 -d > $AVAIL_PLUGIN_PATH/$name/$n
 done < $AVAIL_PLUGIN_PATH/$name/$filename
-: chmod +x $AVAIL_PLUGIN_PATH/$name/recipe-pre-install
-: chmod +x $AVAIL_PLUGIN_PATH/$name/recipe-post-install
+
+for n in recipe-pre-install recipe-post-install; do
+  if [ -f $AVAIL_PLUGIN_PATH/$name/$n ]; then
+    chmod +x  $AVAIL_PLUGIN_PATH/$name/$n
+  fi
+done
