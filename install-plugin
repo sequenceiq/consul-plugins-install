@@ -23,7 +23,7 @@ _get_user(){
 }
 
 _fetch_plugin(){
-  debug "Fetching plugin ($3) from ($1)"
+  debug "Fetching plugin ($3) from ($1)."
   local protocol=$1
   local url=$2
   local name=$3
@@ -32,13 +32,16 @@ _fetch_plugin(){
   if [ -n "$userpass" ]; then
     url=$(echo $url | sed -E "s/^($protocol:\/\/)$userpass@/\1/")
   fi
+  if [ -d $AVAIL_PLUGIN_PATH/$3 ]; then
+    rm -rf $AVAIL_PLUGIN_PATH/$3
+  fi
   mkdir -p $AVAIL_PLUGIN_PATH/$3
   . $(cd `dirname "${BASH_SOURCE[0]}"` && pwd)/protocols/$protocol
   debug "Plugin ($3) fetched successfully."
 }
 
 _extract_plugin(){
-  debug "Extract plugin ($1) to ($AVAIL_PLUGIN_PATH/$1)"
+  debug "Extract plugin ($1) to ($AVAIL_PLUGIN_PATH/$1)."
   local type=$(file $AVAIL_PLUGIN_PATH/$1/$2 | awk '{print tolower($0)}')
   if [[ $type == *" tar "* ]]; then
     tar -xvf $AVAIL_PLUGIN_PATH/$1/$2 -C $AVAIL_PLUGIN_PATH/$1

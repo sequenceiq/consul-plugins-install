@@ -1,8 +1,7 @@
-#!/bin/bash -x
+#!/bin/bash
 
 BRANCH=master
 TEST_DIR=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)
-rm -rf $TEST_DIR/tmp
 export PLUGIN_PATH=$TEST_DIR/tmp
 export CONSUL_STORE=https://raw.githubusercontent.com/sequenceiq/consul-plugins-install/$BRANCH/test/
 export LOGFILE=$PLUGIN_PATH/test.log
@@ -32,3 +31,16 @@ if [ 5 -ne $(find $PLUGIN_PATH/available -name plugin.toml | wc -l) ]; then
   echo "FAILED, some of the plugins are missing!"
   exit 1
 fi
+
+echo "git1" > $PLUGIN_PATH/permanent-plugins
+echo "git2" >> $PLUGIN_PATH/permanent-plugins
+
+. $TEST_DIR/../cleanup-plugin
+main
+
+if [ 2 -ne $(find $PLUGIN_PATH/available -name plugin.toml | wc -l) ]; then
+  echo "FAILED, some of the permanent plugins are accidently removed!"
+  exit 1
+fi
+
+rm -rf $PLUGIN_PATH
